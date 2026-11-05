@@ -14,6 +14,9 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
+// version is set at build time via -ldflags "-X main.version=<tag>".
+var version = "dev"
+
 func main() {
 	var (
 		logLevel = kingpin.Flag(
@@ -47,7 +50,7 @@ func main() {
 			"freeswitch.channel-duration.thresholds",
 			"Comma-separated, strictly increasing channel-age thresholds in seconds for freeswitch_current_channels_by_duration.").Default("30,60,120,300,600,900,1800,3600,7200,14400,21600,43200,86400,172800").String()
 	)
-	kingpin.Version("freeswitch_exporter\nversion: 1.0.6")
+	kingpin.Version("freeswitch_exporter\nversion: " + version)
 	kingpin.Parse()
 
 	promlogConfig := &promlog.Config{}

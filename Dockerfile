@@ -1,9 +1,14 @@
-# build
-FROM golang:1.20 as builder
+# build (runs natively on the build host and cross-compiles for the target platform)
+FROM --platform=$BUILDPLATFORM golang:1.20 AS builder
+
+ARG TARGETOS
+ARG TARGETARCH
+ARG VERSION=dev
 
 WORKDIR /go/src
 COPY . /go/src/
-RUN CGO_ENABLED=0 go build -a -o freeswitch_exporter
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
+    go build -trimpath -ldflags "-s -w -X main.version=${VERSION}" -o freeswitch_exporter
 
 # run
 FROM scratch
