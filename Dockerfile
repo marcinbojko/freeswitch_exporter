@@ -1,5 +1,5 @@
 # build (runs natively on the build host and cross-compiles for the target platform)
-FROM --platform=$BUILDPLATFORM golang:1.20 AS builder
+FROM --platform=$BUILDPLATFORM golang:1.26 AS builder
 
 ARG TARGETOS
 ARG TARGETARCH

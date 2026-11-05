@@ -42,7 +42,7 @@ func main() {
 			"web.config",
 			"[EXPERIMENTAL] Path to config yaml file that can enable TLS or authentication.",
 		).Default("").String()
-		rtpEnable              = kingpin.Flag("rtp.enable", "enable rtp info(feature:todo!), default: fasle").Default("false").Bool()
+		rtpEnable              = kingpin.Flag("rtp.enable", "enable rtp info(feature:todo!), default: false").Default("false").Bool()
 		channelDurationDisable = kingpin.Flag(
 			"freeswitch.channel-duration.disable",
 			"Disable the freeswitch_current_channels_by_duration gauge of active channel counts by age threshold.").Default("false").Bool()
@@ -84,7 +84,7 @@ func main() {
 		target := r.URL.Query().Get("target")
 		if target == "" {
 			http.Error(w, "'target' query param not provided, but required.", http.StatusBadRequest)
-
+			return
 		}
 
 		// Not checking for the port to allow the port to be configured in
@@ -96,6 +96,7 @@ func main() {
 		c, colErr := NewCollector(target, *timeout, *password, *rtpEnable, !*channelDurationDisable, channelDurationThresholds, logger)
 		if colErr != nil {
 			http.Error(w, fmt.Sprintf("failed to create collector for %s: %s", target, colErr), http.StatusInternalServerError)
+			return
 		}
 
 		registry := prometheus.NewRegistry()
