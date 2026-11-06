@@ -64,16 +64,17 @@ jobs:
       - name: Package
         env:
           BIN: freeswitch_exporter${{ matrix.ext }}
-          ZIP: freeswitch_exporter-${{ matrix.goos }}-${{ matrix.goarch }}.zip
+          ARCHIVE: freeswitch_exporter-${{ matrix.goos }}-${{ matrix.goarch }}.zip
         run: |
           mkdir -p dist
-          zip -j "dist/${ZIP}" "${BIN}"
+          zip -j "dist/${ARCHIVE}" "${BIN}"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
           name: freeswitch_exporter-${{ matrix.goos }}-${{ matrix.goarch }}
           path: dist/freeswitch_exporter-${{ matrix.goos }}-${{ matrix.goarch }}.zip
+          if-no-files-found: error
 
   image:
     name: Container image (GHCR)
@@ -145,6 +146,7 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           path: dist/
+          pattern: freeswitch_exporter-*
           merge-multiple: true
 
       - name: Generate checksums
